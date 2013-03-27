@@ -1,7 +1,14 @@
+require './lib/tile'
 
-class Property
-	def initialize
+class Property < Tile
+
+  attr_accessor :owner
+	attr_reader :value
+
+  def initialize(value, name)
 		@available = true
+    @value = value
+    super(name)
 	end
 
 	def available?
@@ -12,4 +19,15 @@ class Property
 		@available = false
 	end
 
+  def rent
+    @value * 5/100
+  end
+
 end
+
+
+
+
+
+#@property = Property.new(100)
+#puts @property.value
