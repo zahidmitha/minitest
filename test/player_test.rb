@@ -9,6 +9,10 @@ class PlayerTest < MiniTest::Unit::TestCase
     create_player
   end
 
+  def test_current_position
+    pass
+  end
+
 
   def test_initial_balance
     assert_equal(2000, @player.balance)

@@ -1,12 +1,13 @@
 class Player
 
-  attr_accessor :balance
+  attr_accessor :balance, :current_position
   attr_reader :properties, :name
 
   def initialize(name)
     @balance = 2000
     @properties = []
     @name = name
+    @current_position = 0
   end
 
   def buy_property(property)

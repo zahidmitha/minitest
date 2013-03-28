@@ -4,7 +4,7 @@ require './lib/tile'
 require './lib/property'
 class EngineTest < MiniTest::Unit::TestCase
 
-  def test_
+end
 
 #Players move around the board
 #Players land on properties
@@ -13,5 +13,3 @@ class EngineTest < MiniTest::Unit::TestCase
 #Dice are rolled before each move
 #Dice rolls determine how far players move
 # One for the player (maybe): Bankruptcy
-
-end
