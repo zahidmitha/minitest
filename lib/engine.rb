@@ -11,20 +11,15 @@ class Engine
   attr_reader :player1
   attr_reader :player2
 
-
   def initialize
     create_players
     @board = Board.new
     @die = Dice.new
-
-
-
   end
 
   def run
-     10.times do
-     end
-
+    create_players()
+    play()
   end
 
   def create_players
@@ -38,39 +33,43 @@ class Engine
 
     @player2 = Player.new(name2)
 
-    puts "The game begins! #{@player1} has a balance of #{@player1}.view_balance. /n
+    puts "The game begins! #{@player1} has a balance of #{@player1.view_balance} \n
     #{@player2} has a balance of #{@player2.balance}"
+  end
+
+  def play
+     10.times do turns
+     end
+  end
+
+  def turns
+    player_actions(@player1)
+    player_actions2(@player2)
+  end
+
+  def player_actions(player)
+    players_move(@player1)
+    which_property(@player1)
+    action_on_land(@player1)
+    choice_to_buy(@player1)
+    game_ends
+    player_actions2(@player2)
 
   end
 
-  def decide_player
-
-
-
+  def player_actions2(player)
+    players_move(@player2)
+    which_property(@player2)
+    action_on_land(@player2)
+    choice_to_buy(@player2)
+    player_actions(@player1)
+    game_ends
   end
-
-
 
   def players_move(player)
     @move = Move.new(@board)
     turn = @move.execute(player,@die.roll)
     @current_position = player.current_position
-
-    # decision = gets
-
-
-
-    # decide_player
-    # get_current_position
-    # roll_dice
-    # move_player_from_current_position
-    # update_current_position
-    # get_current_tile
-    # is_owned?
-    #   pay_rent
-    # can_buy
-    # buy?
-
   end
 
   def which_property(player)
@@ -82,42 +81,34 @@ class Engine
      puts "You have landed on #{@current_position}."
     if @property.available?
       puts "No-one owns this property"
-      choice_to_buy
+      choice_to_buy(player)
     elsif player.owns_property?(@property)
       puts "You own this property. Sweet!"
     else
-      puts "PLACEHOLDER owns this property"
+      puts "#{@property.owner} owns this property"
+      player.pay_rent
+      puts "Your balance is now #{player.balance}"
     end
   end
 
-  def choice_to_buy
+  def choice_to_buy(player)
+      puts "This property generates #{@property.rent} every time someone lands on it."
       puts "Do you want to buy it?"
       answer = gets.chomp
       if answer == "yes"
-        puts "bought"
+        player.buy_property
+        @property.bought
+        puts "Your balance is now #{player.balance}"
+        puts "You own #{@property}"
       else
-        puts "not bought"
+        puts "Not bought."
+        puts "Your balance is still #{player.balance}"
       end
   end
 
   def game_ends
+    @player.bankrupt
+    exit
   end
 
-
 end
-
-# Player is on a position
-#Players move around the board
-#Players land on properties
-#Players pay rent where they land
-#Dice are rolled before each move
-#Dice rolls determine how far players move
-# One for the player (maybe): Bankruptcy
-
-
-engine = Engine.new
-
-engine.players_move(engine.player1)
-engine.which_property(engine.player1)
-engine.action_on_land(engine.player1)
-engine.choice_to_buy

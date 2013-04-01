@@ -38,4 +38,15 @@ class Player
     "#{@balance}"
   end
 
+  def to_s
+    "#{@name}"
+  end
+
+  def bankrupt
+    if @balance < 0
+    puts "@name is bankrupt"
+    end
+  end
+
+
 end
