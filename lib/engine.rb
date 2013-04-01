@@ -8,9 +8,14 @@ require './lib/move'
 
 class Engine
 
+  attr_reader :player1
+  attr_reader :player2
+
+
   def initialize
     create_players
-    decide_player
+    @board = Board.new
+    @die = Dice.new
 
 
 
@@ -19,6 +24,7 @@ class Engine
   def run
      10.times do
      end
+
   end
 
   def create_players
@@ -32,26 +38,23 @@ class Engine
 
     @player2 = Player.new(name2)
 
-    @player1.current_position = 0
-    @player2.current_position = 0
+    puts "The game begins! #{@player1} has a balance of #{@player1}.view_balance. /n
+    #{@player2} has a balance of #{@player2.balance}"
 
   end
 
   def decide_player
-    @board = Board.new
+
 
 
   end
 
 
 
-  def players_move
-    move = Move.new(@board)
-    die = Dice.new
-    turn = move.execute(@player1,die.roll)
-    puts @player1.current_position
-
-    #puts "you have landed on property do you want to buy"
+  def players_move(player)
+    @move = Move.new(@board)
+    turn = @move.execute(player,@die.roll)
+    @current_position = player.current_position
 
     # decision = gets
 
@@ -70,16 +73,31 @@ class Engine
 
   end
 
-  def land_on_properties
+  def which_property(player)
+    @property = @board.properties[player.current_position]
+    @property
   end
 
-  def when_to_pay_rent
-  end
-
-  def when_to_buy
+  def action_on_land(player)
+     puts "You have landed on #{@current_position}."
+    if @property.available?
+      puts "No-one owns this property"
+      choice_to_buy
+    elsif player.owns_property?(@property)
+      puts "You own this property. Sweet!"
+    else
+      puts "PLACEHOLDER owns this property"
+    end
   end
 
   def choice_to_buy
+      puts "Do you want to buy it?"
+      answer = gets.chomp
+      if answer == "yes"
+        puts "bought"
+      else
+        puts "not bought"
+      end
   end
 
   def game_ends
@@ -99,4 +117,7 @@ end
 
 engine = Engine.new
 
-engine.players_move
+engine.players_move(engine.player1)
+engine.which_property(engine.player1)
+engine.action_on_land(engine.player1)
+engine.choice_to_buy

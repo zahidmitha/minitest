@@ -27,12 +27,15 @@ class Player
   end
 
   def receive_rent(rent)
-      @balance += rent
+    @balance += rent
   end
 
   def can_afford_property?(property)
     @balance >= property.value
   end
 
+  def view_balance
+    "#{@balance}"
+  end
 
 end

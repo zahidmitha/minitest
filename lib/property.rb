@@ -23,6 +23,10 @@ class Property < Tile
     @value * 5/100
   end
 
+  def to_s
+    "#{@name}(#{@value})"
+  end
+
 end
 
 
