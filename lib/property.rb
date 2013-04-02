@@ -1,5 +1,3 @@
-require './lib/tile'
-
 class Property < Tile
 
   attr_accessor :owner
@@ -28,10 +26,3 @@ class Property < Tile
   end
 
 end
-
-
-
-
-
-#@property = Property.new(100)
-#puts @property.value

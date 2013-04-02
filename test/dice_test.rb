@@ -6,8 +6,8 @@ require './lib/property'
 
 class DiceTest < MiniTest::Unit::TestCase
 
-def test_dice
-
+  def test_dice
+  end
 
 end
 

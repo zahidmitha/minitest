@@ -1,29 +1,19 @@
-require './lib/property'
-require './lib/tile'
-
 class Board
 
   def initialize
     @properties = []
     create_properties
-
   end
 
-
-
   def properties
-
-  @properties
-
+    @properties
   end
 
   private
 
   def property(value, name)
     @properties << Property.new(value, name)
-
   end
-
 
   def create_properties
     property(60, "Old Kent Road")
@@ -49,7 +39,6 @@ class Board
     property(350, "Park Lane")
     property(400,"Mayfair")
   end
-
 
 end
 

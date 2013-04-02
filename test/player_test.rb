@@ -59,24 +59,32 @@ class PlayerTest < MiniTest::Unit::TestCase
     assert_equal(2000,@player.balance)
   end
 
-  def test_can_afford_rent
+  def test_pays_full_rent
     #property = Property.new(1000, "Mayfair")
-    assert @player.pay_rent(1000)
+    assert_equal 1000, @player.pay_rent(1000)
+    assert_equal 1000, @player.balance
   end
 
-  def test_can_not_afford_rent
+  def test_bankrupt_when_can_not_afford_rent
     #property = Property.new(50000, "Mayfair")
-    assert_equal false, @player.pay_rent(4000)
+    @player.pay_rent(3000)
+    assert @player.bankrupt?
   end
+
+  def test_not_bankrupt_when_can_afford_rent
+    #property = Property.new(50000, "Mayfair")
+    @player.pay_rent(1000)
+    refute @player.bankrupt?
+  end
+
 
   def test_rent_value_deducted_from_balance_when_paid
     @player.pay_rent(1000)
     assert_equal(1000,@player.balance)
   end
 
-  def test_rent_value_not_deducted_from_balance_when_paid
-    @player.pay_rent(4000)
-    assert_equal(2000,@player.balance)
+  def test_rent_value_deducted_from_remaining_balance
+    assert_equal(2000,@player.pay_rent(3000))
   end
 
   def test_balance_increases_when_rent_received

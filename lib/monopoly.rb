@@ -1,5 +1,6 @@
 require './lib/board'
 require './lib/player'
+require './lib/gamers'
 require './lib/tile'
 require './lib/move'
 require './lib/dice'

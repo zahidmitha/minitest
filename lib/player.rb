@@ -11,15 +11,21 @@ class Player
   end
 
   def buy_property(property)
-    if self.can_afford_property?(property)
+    return false unless self.can_afford_property?(property)
       @balance -= property.value
       @properties << property
-    end
   end
 
   def pay_rent(rent)
-    return false unless @balance >= rent
-    @balance -= rent
+    if @balance >= rent
+       @balance -= rent
+       rent
+    else
+       @bankrupt = true
+       paid = @balance
+       @balance = 0
+       paid
+    end
   end
 
   def owns_property?(property)
@@ -42,10 +48,12 @@ class Player
     "#{@name}"
   end
 
-  def bankrupt
-    if @balance < 0
-    puts "@name is bankrupt"
-    end
+  def owned_properties
+
+  end
+
+  def bankrupt?
+    @bankrupt
   end
 
 
