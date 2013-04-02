@@ -33,15 +33,18 @@ class Engine
   end
 
   def play
-    @gamers.players.cycle { |player| player_actions(player)}
+    @gamers.players.cycle do |player|
+      player_actions(player)
+      next if player.bankrupt?
+      game_ends
+    end
+
   end
 
   def player_actions(player)
     players_move(player)
     which_property(player)
     action_on_land(player)
-    game_ends(player)
-    # player_actions2(player)
   end
 
   def players_move(player)
@@ -99,12 +102,11 @@ class Engine
     end
   end
 
-  def game_ends(player)
-    if player.bankrupt?
-      puts "#{player.name} is bankrupt."
-      puts "Game over!"
-      exit
-    end
+  def game_ends
+      if @gamers.players.count == 1
+        puts "You win! Game over."
+        exit
+      end
   end
 
 end
