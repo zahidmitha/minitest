@@ -8,11 +8,6 @@ class Gamers
 
   end
 
-  def create_player(player)
-
-    @players << player
-
-  end
 
 
 end

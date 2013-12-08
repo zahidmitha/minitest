@@ -1,6 +1,6 @@
 class Player
 
-  attr_accessor :balance, :current_position
+  attr_accessor :balance, :current_position, :current_tile
   attr_reader :properties, :name
 
   def initialize(name)
@@ -19,13 +19,12 @@ class Player
   def pay_rent(rent)
     if @balance >= rent
        @balance -= rent
-       rent
     else
        @bankrupt = true
-       paid = @balance
+       rent = @balance
        @balance = 0
-       paid
     end
+    rent
   end
 
   def owns_property?(property)

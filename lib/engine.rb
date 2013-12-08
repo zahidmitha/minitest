@@ -4,7 +4,7 @@ class Engine
     @board = Board.new
     # raise @board.inspect
     @die = Dice.new
-    @gamers = Gamers.new
+    @players = []
   end
 
   # @gamers.players[current_player]
@@ -15,98 +15,120 @@ class Engine
   end
 
   def create_players
-    play = false
-    while play == false do
-      puts "would you like to add a player?"
-      answer = gets.chomp.downcase
-      if answer == "yes"
-        puts "What is the player's name?"
-        name = gets.chomp.capitalize
-        @gamers.create_player(Player.new(name))
-        play = false
-      else
-        play = true
-      end
-      # puts "The game begins! #{@player1} has a balance of #{@player1.view_balance} \n
-      # #{@player2} has a balance of #{@player2.balance}"
+    while true
+
+      break unless player_answers_yes?("would you like to add a player?")
+
+      create_player
     end
   end
+
+
+  def create_player
+    name = get_player_input("What is the player's name?").capitalize
+    @players << Player.new(name)
+  end
+
 
   def play
-    @gamers.players.cycle do |player|
-      player_actions(player)
-      next if player.bankrupt?
-      game_ends
+    @players.cycle do |player|
+      unless player.bankrupt?
+        do_turn(player)
+      end
+      test_game_ends
     end
+  end
+
+  def do_turn(player)
+    move_player(player)
+    take_action(player)
+  end
+
+  def move_player(player)
+    move = Move.new(@board)
+    move.execute(player, @die.roll)
+  end
+
+  def take_action(player)
+    puts "#{player} landed on #{player.current_tile}."
+
+    take_property_action(player, player.current_tile) if player.current_tile.is_a?(Property)
 
   end
 
-  def player_actions(player)
-    players_move(player)
-    which_property(player)
-    action_on_land(player)
-  end
+  def take_property_action(player, property)
 
-  def players_move(player)
-    @move = Move.new(@board)
-    turn = @move.execute(player,@die.roll)
-    @current_position = player.current_position
-  end
-
-  def which_property(player)
-    @current_property = @board.properties[player.current_position]
-  end
-
-  def action_on_land(player)
-    puts "#{player} landed on #{@current_property}."
-    if @current_property.available?
+    if property.available? && player.can_afford_property?(property)
       puts "No-one owns this property"
-      choice_to_buy(player)
-    elsif player.owns_property?(@current_property)
+      offer_property_to(player, property)
+
+    elsif player.owns_property?(property)
       puts "You own this property. Sweet!"
       puts "Your balance is still #{player.balance}"
       puts "You own #{player.properties}."
       puts "------------------------------"
+
     else
-      puts "#{@current_property.owner} owns this property"
-      player.pay_rent(@current_property.rent)
-      puts "You paid #{@current_property.rent} in rent to them."
-      puts "Your balance is now #{player.balance}"
-      puts "You own #{player.properties}."
-      puts "------------------------------"
+      pay_rent(player, property)
     end
+
   end
 
-  def choice_to_buy(player)
-    puts "This property generates #{@current_property.rent} every time someone lands on it."
+  def offer_property_to(player, property)
+    puts "This property generates #{property.rent} every time someone lands on it."
     puts "Your current balance is #{player.balance}."
-    puts "Do you want to buy it?"
-    answer = gets.chomp
-    if answer == "yes"
-      if player.buy_property(@current_property)
-        @current_property.bought
-        @current_property.owner = player
-        puts "Your balance is now #{player.balance}"
-        puts "You now own #{player.properties}."
-        puts "------------------------------"
-      else
-        puts "You're broke-you can't afford it."
-        puts "You still own #{player.properties}."
-        puts "------------------------------"
-      end
+
+    if player_answers_yes?("Do you want to buy it?")
+      buy_property(player,property)
     else
       puts "Not bought."
       puts "Your balance is still #{player.balance}"
       puts "You still own #{player.properties}."
       puts "------------------------------"
     end
+
   end
 
-  def game_ends
-      if @gamers.players.count == 1
-        puts "You win! Game over."
-        exit
-      end
+  def buy_property(player,property)
+
+    if player.buy_property(property)
+      property.bought
+      property.owner = player
+      puts "Your balance is now #{player.balance}"
+      puts "You now own #{player.properties}."
+      puts "------------------------------"
+    else
+      puts "You're broke-you can't afford it."
+      puts "You still own #{player.properties}."
+      puts "------------------------------"
+    end
+  end
+
+  def pay_rent(player, property)
+    puts "#{property.owner} owns this property"
+    player.pay_rent(property.rent)
+    puts "You paid #{property.rent} in rent to them."
+    puts "Your balance is now #{player.balance}"
+    puts "You own #{player.properties}."
+    puts "------------------------------"
+
+  end
+
+  def get_player_input(message)
+    puts message
+    gets.chomp
+  end
+
+  def player_answers_yes?(message)
+    get_player_input(message).downcase == "yes"
+  end
+
+  def test_game_ends
+    @players.reject! { |player| player.bankrupt? }
+    if @players.count == 1
+      puts "You win! Game over."
+      exit
+    end
   end
 
 end

@@ -6,7 +6,7 @@ class Move
 
   def execute(player, die_roll)
     player.current_position = (player.current_position + die_roll) % @board.properties.count
-    @board.properties[player.current_position]
+    player.current_tile = @board.properties[player.current_position]
 
   end
 
